@@ -1,0 +1,12 @@
+1. set default state
+  - game phases: 'challenge', 'play', 'win', 'lose'
+    - challenge: show pieces to user...
+    - play: hide pieces, allow user to choose cells
+    - win: user chooses all pieces
+    - lose: user time runs out, pieces still unchosen
+
+Next:
+- setTimer to change gameStatus from 'challenge' to 'hide'
+
+
+
