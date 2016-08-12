@@ -22,8 +22,14 @@ class Cell extends Component {
     }).length === 1;
   }
 
+  canBeClicked() {
+    return !this.isSelected();
+  }
+
   guess = () => {
-    this.props.selectCell(this.props.row, this.props.col);
+    if(this.canBeClicked() && this.props.gameState === 'play') {
+      this.props.selectCell(this.props.row, this.props.col);
+    }
   }
 
   getClassName() {

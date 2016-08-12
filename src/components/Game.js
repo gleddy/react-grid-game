@@ -13,17 +13,68 @@ class Game extends Component {
         { r: 5, c: 3 }
       ],
       selected: [],
-      gameState: 'play' // challenge,play,won,lost
+      correctGuesses: 0,
+      gameState: 'challenge' // challenge,play,won,lost
     }
   }
 
+  // start the game (countdown to play)
+  componentDidMount() {
+    this.timerId = setTimeout(() => {
+      this.setState({gameState: 'play'})
+    }, 2000)
+  }
+
+  // clear timer on unmount
+  componentWillUnmount() {
+    clearTimeout(this.timerId);
+  }
+
   selectCell = (r,c) => {
+
     this.setState({selected: this.state.selected.concat({r,c})})
+
+    const checkGameStatus = this.state.targets.filter(cell => cell.r === r && cell.c === c);
+
+    if(checkGameStatus.length) {
+      this.setState({correctGuesses: this.state.correctGuesses + 1});
+    }
+
+    if(this.state.correctGuesses + 1 === this.state.targets.length) {
+      this.endGame();
+    }
+
+  }
+
+  showMessage = () => {
+    let message;
+    switch(this.state.gameState) {
+      case 'challenge':
+        message = 'Challenge - remember where the blue tiles are!';
+        break;
+      case 'won':
+        message = 'You win!';
+        break;
+      case 'lost':
+        message = 'You lost!';
+        break;
+      default: 
+        message = 'Play! - click the tiles to guess';
+    }
+    return message;
+  }
+
+  startGame() {
+    setTimeout(() => this.setState({gameState: 'play'}), 3000);
+  }
+
+  endGame() {
+    this.setState({gameState: 'won'});
   }
 
   render() {
 
-    let grid = [], row;
+    let grid = [], row, button;
 
     for (let i = 0; i < this.props.rows; i++) {
 
@@ -51,9 +102,19 @@ class Game extends Component {
       )
     };
 
+    if(this.state.gameState === 'won' || this.state.gameState === 'lost') {
+      button = <button type="button" onClick={this.props.resetGame}>Play Again?</button>;
+    }
+
     return (
       <div className="game-container">
         {grid}
+        <div className="game-footer">
+          {this.showMessage()}
+          <p>Correct guesses: {this.state.correctGuesses}</p>
+          <p>Hidden Tiles: {this.state.targets.length}</p>
+          {button}
+        </div>
       </div>
     );
   }
