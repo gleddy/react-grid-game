@@ -7,11 +7,7 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      targets: [ // eg { r:1,c:1 }
-        { r: 1, c: 1 },
-        { r: 3, c: 5 },
-        { r: 5, c: 3 }
-      ],
+      targets: this.pickRandomTargets(),
       selected: [],
       correctGuesses: 0,
       gameState: 'challenge' // challenge,play,won,lost
@@ -28,6 +24,24 @@ class Game extends Component {
   // clear timer on unmount
   componentWillUnmount() {
     clearTimeout(this.timerId);
+  }
+
+  getRandomArbitrary(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+  }
+
+  pickRandomTargets() {
+    const targetsNum = 3,
+          targetsArr = [];
+
+    for (var i = 0; i < targetsNum; i++) {
+      targetsArr.push({
+        r: this.getRandomArbitrary(1,5),
+        c: this.getRandomArbitrary(1,5)
+      });
+    };
+
+    return targetsArr;
   }
 
   selectCell = (r,c) => {
